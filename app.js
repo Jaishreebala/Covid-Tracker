@@ -2,9 +2,12 @@ const table = document.querySelector("#country-list");
 const countryAnalysis = document.querySelector("#countryAnalysis");
 const index = document.querySelector("#index")
 const countryData = document.querySelector("#countryData")
+const form = document.querySelector("form");
+const submitButton = document.querySelector("button");
+const countrySearch = document.querySelector("input");
 let country;
 
-async function getDataFromAPI() {
+async function fetchAPI() {
     const fetchData = await fetch("https://api.covid19api.com/summary", {
         method: 'GET',
         headers: {
@@ -13,11 +16,12 @@ async function getDataFromAPI() {
     })
 
     const data = await fetchData.json();
-    // console.log(data.Countries);
+    return data;
+}
+async function getDataFromAPI() {
+    const data = await fetchAPI();
     data.Countries.forEach(country => {
-        // console.log(country)
         let tableRow = document.createElement("tr");
-        // for(var i = 0 ; i<7; i++){
         let countryName = document.createElement("td");
         let newConfirmed = document.createElement("td");
         let newDeaths = document.createElement("td");
@@ -50,27 +54,50 @@ async function getDataFromAPI() {
     })
     const tableRows = document.querySelectorAll("tr");
     tableRows.forEach(row => {
-        // console.log(row)
         row.addEventListener("click", (e) => {
             if (!(e.target.innerText == "Country")) {
                 country = e.target.parentNode.querySelectorAll("td")[7].innerText;
-                // localStorage.setItem("country", country);
                 localStorage.setItem('country', JSON.stringify(country))
-                console.log(localStorage.getItem('country'))
                 window.location.href = "./country.html";
-                // console.log(countryAnalysis)
             }
         })
     })
 
 }
+async function findSlug(countryCompare) {
+    const data = await fetchAPI();
+    // const data = await fetchData.json();
+    console.log(data.Countries)
+    data.Countries.forEach(countries => {
+        if ((countryCompare).localeCompare((countries.Country), undefined, { sensitivity: 'accent' }) == 0) {
+
+            country = countries.Slug;
+            // console.log(country)
+            localStorage.setItem('country', JSON.stringify(country))
+            console.log(localStorage.getItem('country'))
+        }
+    })
+    window.location.href = "./country.html";
+}
 if (index) {
     getDataFromAPI();
+    submitButton.addEventListener("click", searchForCountry);
+    function searchForCountry(e) {
+        e.preventDefault();
+        if (countrySearch.value) {
+            findSlug(countrySearch.value)
+            console.log(localStorage.getItem('country'))
+            // 
+        }
+    }
+
 }
 if (countryAnalysis) {
+    console.log(localStorage.getItem('country'))
+
     var countryName = localStorage.getItem('country');
     countryName = countryName.substr(1, countryName.length - 2)
-    console.log(countryData)
+    console.log(countryName)
     countryAnalysis.addEventListener("load", loadCharts(countryName))
 }
 function loadCharts(country) {
@@ -95,7 +122,6 @@ function loadCharts(country) {
             confirmed.push(country.Confirmed);
             active.push(country.Active)
         })
-        console.log(data[data.length - 1])
         countryData.querySelector("h1").innerText = data[data.length - 1].Country
         countryData.querySelectorAll("span")[0].innerText = data[data.length - 1].Confirmed
         countryData.querySelectorAll("span")[1].innerText = data[data.length - 1].Recovered
@@ -142,6 +168,3 @@ function loadCharts(country) {
     }
 
 }
-// country = "canada"
-
-
