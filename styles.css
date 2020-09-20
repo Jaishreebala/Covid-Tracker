@@ -78,3 +78,7 @@ form button{
 #country-list tr td:first-child{
     font-weight: 500;
 }
+
+#country-list tr td:last-child{
+    display: none;
+}
