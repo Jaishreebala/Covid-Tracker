@@ -1,6 +1,7 @@
 const table = document.querySelector("#country-list");
 const countryAnalysis = document.querySelector("#countryAnalysis");
 const index = document.querySelector("#index")
+const countryData = document.querySelector("#countryData")
 let country;
 
 async function getDataFromAPI() {
@@ -69,8 +70,7 @@ if (index) {
 if (countryAnalysis) {
     var countryName = localStorage.getItem('country');
     countryName = countryName.substr(1, countryName.length - 2)
-    console.log(countryName)
-
+    console.log(countryData)
     countryAnalysis.addEventListener("load", loadCharts(countryName))
 }
 function loadCharts(country) {
@@ -79,6 +79,7 @@ function loadCharts(country) {
     let active = [];
     let confirmed = [];
     let Labels = [];
+
     async function getDataFromAPI() {
         const fetchData = await fetch(`https://api.covid19api.com/total/country/${country}`, {
             method: 'GET',
@@ -94,6 +95,12 @@ function loadCharts(country) {
             confirmed.push(country.Confirmed);
             active.push(country.Active)
         })
+        console.log(data[data.length - 1])
+        countryData.querySelector("h1").innerText = data[data.length - 1].Country
+        countryData.querySelectorAll("span")[0].innerText = data[data.length - 1].Confirmed
+        countryData.querySelectorAll("span")[1].innerText = data[data.length - 1].Recovered
+        countryData.querySelectorAll("span")[2].innerText = data[data.length - 1].Deaths
+        countryData.querySelectorAll("span")[3].innerText = data[data.length - 1].Active
         drawChart(recovered, "chartRecovered", "Recovered", "bar")
         drawChart(active, "chartActive", "Active Cases", "bar")
         drawChart(confirmed, "chartConfirmed", "Confirmed Cases", "bar")
