@@ -53,8 +53,9 @@ async function getDataFromAPI() {
         row.addEventListener("click", (e) => {
             if (!(e.target.innerText == "Country")) {
                 country = e.target.parentNode.querySelectorAll("td")[7].innerText;
-                localStorage.setItem("country", country);
-                console.log(country)
+                // localStorage.setItem("country", country);
+                localStorage.setItem('country', JSON.stringify(country))
+                console.log(localStorage.getItem('country'))
                 window.location.href = "./country.html";
                 // console.log(countryAnalysis)
             }
@@ -66,12 +67,11 @@ if (index) {
     getDataFromAPI();
 }
 if (countryAnalysis) {
-    var countryName = localStorage.getItem("country");
+    var countryName = localStorage.getItem('country');
+    countryName = countryName.substr(1, countryName.length - 2)
+    console.log(countryName)
 
-    alert("hi")
-    console.log(country)
-
-    // countryAnalysis.addEventListener("load", loadCharts(country))
+    countryAnalysis.addEventListener("load", loadCharts(countryName))
 }
 function loadCharts(country) {
     let deaths = [];
