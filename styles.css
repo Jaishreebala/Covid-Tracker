@@ -85,6 +85,10 @@ main h1{
 
 #country-list th{
     color: #0066FF;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    border-bottom: #0066FF solid 1px;
 }
 
 #country-list tr:nth-child(even){

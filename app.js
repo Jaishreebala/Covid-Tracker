@@ -66,15 +66,12 @@ async function getDataFromAPI() {
 }
 async function findSlug(countryCompare) {
     const data = await fetchAPI();
-    // const data = await fetchData.json();
     console.log(data.Countries)
     data.Countries.forEach(countries => {
         if ((countryCompare).localeCompare((countries.Country), undefined, { sensitivity: 'accent' }) == 0) {
 
             country = countries.Slug;
-            // console.log(country)
             localStorage.setItem('country', JSON.stringify(country))
-            console.log(localStorage.getItem('country'))
         }
     })
     window.location.href = "./country.html";
